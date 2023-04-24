@@ -3,28 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\Config;
+use Exception;
 use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use MailerLite\MailerLite;
 use Illuminate\Support\Facades\Redirect;
 
-class ValidationController extends Controller {
+class ValidationController extends Controller
+{
 
-    public function showform() {
+    /**
+     * Show form to be completed by user.
+     *
+     * @return View
+     */
+    public function showform()
+    {
         return view('api-key-authentication');
     }
 
-    public function validateform(Request $request) {
+    /**
+     * Validate that form fields have been completed
+     * Secondly if they have checked if the API key is valid
+     *
+     * @return View
+     * @throws ValidationException
+     */
+    public function validateform(Request $request)
+    {
 
         // Validate that the apiKey field has data
-        $this->validate($request,[
-            'apiKey'=>'required'
+        $this->validate($request, [
+            'apiKey' => 'required'
         ]);
 
         $mailerLite = new MailerLite(['api_key' => $request->apiKey]);
 
-        try{
+        try {
             // Check if the key works in an API call
             $mailerLite->subscribers->get();
 
@@ -35,7 +51,7 @@ class ValidationController extends Controller {
             );
 
             return Redirect::to('/');
-        } catch(\Exception $e) {
+        } catch (Exception) {
             return view('api-key-authentication', [
                 'key' => 'invalid'
             ]);
