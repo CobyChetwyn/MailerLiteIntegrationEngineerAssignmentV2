@@ -38,13 +38,15 @@ class Table extends Controller
 
                 return DataTables::of($data)
                                  ->addIndexColumn()
+                                 ->editColumn('email',
+                                     '<a href="javascript:void(0)" class="edit-record" data-id="{{$id}}">{{$email}}</a>')
                                  ->addColumn('action', function ($row) {
                                      return '<a href="javascript:void(0)" class="edit btn btn-success btn-sm edit-record" data-id="'
-                                        . $row['id']
-                                        . '">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm delete-record" data-id="'
-                                        . $row['id'] . '">Delete</a>';
+                                            . $row['id']
+                                            . '">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm delete-record" data-id="'
+                                            . $row['id'] . '">Delete</a>';
                                  })
-                                 ->rawColumns(['action'])
+                                 ->rawColumns(['action', 'email'])
                                  ->make(true);
             }
 
